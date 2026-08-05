@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Brand Palette
+  ─────────────────────────────────────────
+  #F5F5F0  →  60  20%  96%   Warm off-white (background)
+  #E6D8C3  →  36  40%  83%   Warm beige (muted / border)
+  #C2A68C  →  29  31%  66%   Warm tan (accent / input border)
+  #5D866C  → 142  18%  45%   Sage green (primary)
+  ─────────────────────────────────────────
+*/
+
+@layer base {
+  :root {
+    /* ── Surfaces ── */
+    --background:          60  20% 96%;    /* #F5F5F0 warm off-white */
+    --foreground:          30  20% 14%;    /* dark warm brown text */
+
+    --card:                 0   0% 100%;
+    --card-foreground:     30  20% 14%;
+
+    --popover:              0   0% 100%;
+    --popover-foreground:  30  20% 14%;
+
+    /* ── Brand: Sage Green #5D866C ── */
+    --primary:            142  18% 45%;
+    --primary-foreground:   0   0% 98%;
+
+    /* ── Secondary: Warm Beige #E6D8C3 ── */
+    --secondary:           36  40% 88%;
+    --secondary-foreground: 30  20% 14%;
+
+    /* ── Muted: Light beige ── */
+    --muted:               36  30% 90%;
+    --muted-foreground:    30  12% 42%;
+
+    /* ── Accent: Warm Tan #C2A68C ── */
+    --accent:              29  31% 83%;
+    --accent-foreground:   30  20% 14%;
+
+    /* ── Semantic ── */
+    --destructive:        346  84% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* ── Borders / Inputs ── */
+    --border:              36  30% 80%;    /* warm beige border */
+    --input:               36  25% 82%;
+    --ring:               142  18% 45%;    /* sage focus ring */
+
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    /* ── Dark Surfaces (earthy deep sage) ── */
+    --background:         150  14%  7%;    /* very dark sage */
+    --foreground:          36  28% 88%;    /* warm cream text */
+
+    --card:               150  12% 10%;
+    --card-foreground:     36  28% 88%;
+
+    --popover:            150  12% 11%;
+    --popover-foreground:  36  28% 88%;
+
+    /* ── Brand: lighter sage in dark ── */
+    --primary:            142  25% 55%;
+    --primary-foreground: 150  15%  8%;
+
+    /* ── Secondary / Muted ── */
+    --secondary:          142   8% 18%;
+    --secondary-foreground: 36 22% 80%;
+
+    --muted:              142   8% 16%;
+    --muted-foreground:    36  14% 55%;
+
+    --accent:             142   8% 20%;
+    --accent-foreground:   36  22% 86%;
+
+    /* ── Semantic ── */
+    --destructive:        346  72% 52%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* ── Borders / Inputs ── */
+    --border:             142   8% 22%;
+    --input:              142   8% 19%;
+    --ring:               142  25% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    outline-color: hsl(var(--ring));
+  }
+  html {
+    @apply bg-background;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  /* ── Earthy scrollbar ── */
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { background: hsl(60 10% 92%); }
+  ::-webkit-scrollbar-thumb  { background: hsl(29 25% 72%); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(142 18% 50%); }
+
+  .dark ::-webkit-scrollbar-track  { background: hsl(150 14%  9%); }
+  .dark ::-webkit-scrollbar-thumb  { background: hsl(142  8% 26%); border-radius: 99px; }
+  .dark ::-webkit-scrollbar-thumb:hover { background: hsl(142 18% 40%); }
+
+  /* ── Text selection ── */
+  ::selection       { background: hsl(142 18% 45% / 0.25); color: hsl(30 20% 14%); }
+  .dark ::selection { background: hsl(142 25% 55% / 0.30); color: hsl(36 28% 92%); }
+}
+
+/* ── Glassmorphism ── */
+.glass-panel {
+  background: rgba(245, 245, 240, 0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(194, 166, 140, 0.30);
+}
+
+.dark .glass-panel {
+  background: rgba(12, 22, 16, 0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(93, 134, 108, 0.15);
+}
+
+/* ── Subtle page enter animation ── */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+

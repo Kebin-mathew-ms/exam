@@ -1,0 +1,33 @@
+replicaCount: 2
+
+image:
+  backendRepository: "aegis-backend"
+  frontendRepository: "aegis-frontend"
+  tag: "stable"
+  pullPolicy: "IfNotPresent"
+
+database:
+  url: "mysql+pymysql://exam_user:Password123!@mysql:3306/examination_db"
+
+cache:
+  url: "redis://:RedisSecurePass123!@redis:6379/0"
+
+secretKey: "SecretSuperSecureJWTKeyToken123!"
+
+ingress:
+  enabled: true
+  host: "api.example.com"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80

@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: aegis_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:-RootSecurePass123!}
+      MYSQL_DATABASE: ${DATABASE_NAME:-examination_db}
+      MYSQL_USER: ${DATABASE_USER:-exam_user}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:-Password123!}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pRootSecurePass123!"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aegis_net
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: aegis_redis
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD:-RedisSecurePass123!}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-RedisSecurePass123!}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aegis_net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aegis_backend
+    restart: always
+    environment:
+      - DATABASE_URL=mysql+pymysql://${DATABASE_USER:-exam_user}:${DATABASE_PASSWORD:-Password123!}@mysql:3306/${DATABASE_NAME:-examination_db}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-RedisSecurePass123!}@redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-SecretSuperSecureJWTKeyToken123!}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - aegis_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aegis_frontend
+    restart: always
+    networks:
+      - aegis_net
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: aegis_nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - uploads_data:/usr/share/nginx/html/uploads:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - aegis_net
+
+volumes:
+  mysql_data:
+  redis_data:
+  uploads_data:
+
+networks:
+  aegis_net:
+    driver: bridge
