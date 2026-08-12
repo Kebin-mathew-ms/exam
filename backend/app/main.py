@@ -106,6 +106,7 @@ def on_startup():
     logger.info("FastAPI Application backend is starting up.")
 
 # Mount uploads static folder so photos can be requested/rendered
+os.makedirs("uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # Register routes under /api
